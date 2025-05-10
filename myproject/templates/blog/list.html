@@ -1,0 +1,71 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block main %}
+{% load base_tags %}
+{% load humanize %}
+<!-- Page Header-->
+<header class="masthead" style="background-image: url('{% static "blog/assets/img/home-bg.jpg" %}')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading">
+                    <h1>django project</h1>
+                    <span class="subheading">A Blog Theme by Start Bootstrap</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Main Content-->
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    {% block header %}{% endblock %}
+                    {% popular_articles %}
+                    <br>
+                    {% hot_articles %}
+                    {% for article in object_list %}
+                    <!-- Post preview-->
+                    <div class="post-preview">
+                        <a href="{% url "blog:post" article.slug %}">
+                            <h2 class="post-title">
+                                {{article.title}}
+                                {% if article.is_special %}
+                                <span class="badge badge-danger" style="font-size: 14px ; color: red;">ویژه</span>
+                                {% endif %}
+                            </h2>
+                            <h3 class="post-subtitle">{{article.description|striptags|truncatewords:30}}</h3>
+                        </a>
+                        <p class="post-meta">
+                            Posted by:<a href="{% url 'blog:author' article.author %}">{{ article.author.get_full_name }}</a>
+                        <p style="direction: ltr;"><small>{{article.publish|naturaltime}}</small></p>
+                        </p>
+                        <div>
+                            {% for cat in article.category_published.all %}
+                            <a href="{% url 'blog:category' cat.slug %}">#{{cat.title}}</a>
+                            {% endfor %}
+                        </div>
+                        <div>بازدیدها: {{article.hits.count}}</div>
+                    </div>
+                    <!-- Divider-->
+                    <hr class="my-4" />
+                    {% empty %}
+                    <p>محتوایی برای نمایش وجود ندارد.</p>
+                    {% endfor %}
+                    <!-- Pager-->
+                    {% if is_paginated %}
+                    {% if page_obj.has_previous %}
+                    <div class="d-flex justify-content-end mb-4 pager-botton">
+                        <a class="btn btn-primary text-uppercase ml-3" href="{% block previous_page_url %}{% endblock %}">پست های جدید&larr;</a>
+                    </div>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                    <div class="d-flex justify-content-end mb-4 pager-botton">
+                        <a class="btn btn-primary text-uppercase ml-3" href="{% block next_page_url %}{% endblock %}">&rarr;پست های قدیمی</a>
+                    </div>
+                    {% endif %}
+            {% endif %}
+                </div>
+            </div>
+        </div>
+{% endblock %}

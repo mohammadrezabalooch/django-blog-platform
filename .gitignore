@@ -1,0 +1,8 @@
+env/
+.env
+myproject/db.sqlite3
+__pychache__/
+*.log
+*.pyc
+*.pot
+local_settings.py
